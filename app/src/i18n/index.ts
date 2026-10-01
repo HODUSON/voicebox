@@ -8,11 +8,13 @@ import it from './locales/it/translation.json';
 import ja from './locales/ja/translation.json';
 import ko from './locales/ko/translation.json';
 import ptBR from './locales/pt-BR/translation.json';
+import vi from './locales/vi/translation.json';
 import zhCN from './locales/zh-CN/translation.json';
 import zhTW from './locales/zh-TW/translation.json';
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
+  { code: 'vi', label: 'Tiếng Việt' },
   { code: 'es', label: 'Español' },
   { code: 'pt-BR', label: 'Português (Brasil)' },
   { code: 'ja', label: '日本語' },
@@ -31,6 +33,7 @@ i18n
   .init({
     resources: {
       en: { translation: en },
+      vi: { translation: vi },
       es: { translation: es },
       'pt-BR': { translation: ptBR },
       ja: { translation: ja },

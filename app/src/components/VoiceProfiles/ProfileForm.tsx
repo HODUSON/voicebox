@@ -37,7 +37,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { apiClient } from '@/lib/api/client';
 import type { EffectConfig, PresetVoice, VoiceType } from '@/lib/api/types';
-import { LANGUAGE_CODES, LANGUAGE_OPTIONS, type LanguageCode } from '@/lib/constants/languages';
+import {
+  ALL_LANGUAGES,
+  getLanguageOptionsForEngine,
+  LANGUAGE_CODES,
+  LANGUAGE_OPTIONS,
+  type LanguageCode,
+} from '@/lib/constants/languages';
 import { useAudioPlayer } from '@/lib/hooks/useAudioPlayer';
 import { useAudioRecording } from '@/lib/hooks/useAudioRecording';
 import {
@@ -61,7 +67,7 @@ import { AudioSampleUpload } from './AudioSampleUpload';
 import { SampleList } from './SampleList';
 
 const MAX_AUDIO_DURATION_SECONDS = 30;
-const PRESET_ONLY_ENGINES = new Set(['kokoro', 'qwen_custom_voice']);
+const PRESET_ONLY_ENGINES = new Set(['kokoro', 'kokoro_vi', 'qwen_custom_voice']);
 const DEFAULT_ENGINE_OPTIONS = [
   { value: 'qwen', label: 'Qwen3-TTS' },
   { value: 'qwen_custom_voice', label: 'Qwen CustomVoice' },
@@ -70,6 +76,7 @@ const DEFAULT_ENGINE_OPTIONS = [
   { value: 'chatterbox_turbo', label: 'Chatterbox Turbo' },
   { value: 'tada', label: 'TADA' },
   { value: 'kokoro', label: 'Kokoro 82M' },
+  { value: 'kokoro_vi', label: 'Kokoro Vietnamese' },
 ] as const;
 
 function makeProfileSchema(t: (key: string) => string) {
@@ -161,6 +168,16 @@ export function ProfileForm() {
   const [profileEffectsChain, setProfileEffectsChain] = useState<EffectConfig[]>([]);
   const [effectsDirty, setEffectsDirty] = useState(false);
   const [defaultEngine, setDefaultEngine] = useState<string>('');
+
+  const formatGender = (gender: string) => {
+    if (gender === 'male') return t('profileForm.gender.male', 'Nam');
+    if (gender === 'female') return t('profileForm.gender.female', 'Nữ');
+    return gender;
+  };
+
+  const formatLanguageBadge = (lang: string) => {
+    return ALL_LANGUAGES[lang as LanguageCode] || lang;
+  };
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(makeProfileSchema(t)),
@@ -401,6 +418,17 @@ export function ProfileForm() {
       setSelectedPresetVoiceId('');
     }
   }, [presetVoices, selectedPresetVoiceId]);
+
+  // Synchronize form language with preset engine's supported languages
+  useEffect(() => {
+    if (isCreating && voiceSource === 'builtin') {
+      const options = getLanguageOptionsForEngine(selectedPresetEngine);
+      const currentLang = form.getValues('language');
+      if (!options.some((opt) => opt.value === currentLang)) {
+        form.setValue('language', options[0].value as LanguageCode, { shouldValidate: true });
+      }
+    }
+  }, [isCreating, voiceSource, selectedPresetEngine, form]);
   async function handleTranscribe() {
     const file = form.getValues('sampleFile');
     if (!file) {
@@ -557,10 +585,16 @@ export function ProfileForm() {
           return;
         }
 
+        // Ensure kokoro_vi or other single-language preset engine strictly uses its supported language
+        const presetAllowedOptions = getLanguageOptionsForEngine(selectedPresetEngine);
+        const finalLanguage = presetAllowedOptions.some((opt) => opt.value === data.language)
+          ? data.language
+          : (presetAllowedOptions[0].value as LanguageCode);
+
         const profile = await createProfile.mutateAsync({
           name: data.name,
           description: data.description,
-          language: data.language,
+          language: finalLanguage,
           voice_type: 'preset' as VoiceType,
           preset_engine: selectedPresetEngine,
           preset_voice_id: selectedPresetVoiceId,
@@ -888,7 +922,16 @@ export function ProfileForm() {
                             <FormLabel>{t('profileForm.fields.engine')}</FormLabel>
                             <Select
                               value={selectedPresetEngine}
-                              onValueChange={setSelectedPresetEngine}
+                              onValueChange={(engine) => {
+                                setSelectedPresetEngine(engine);
+                                const options = getLanguageOptionsForEngine(engine);
+                                const currentLang = form.getValues('language');
+                                if (!options.some((opt) => opt.value === currentLang)) {
+                                  form.setValue('language', options[0].value as LanguageCode, {
+                                    shouldValidate: true,
+                                  });
+                                }
+                              }}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -897,6 +940,7 @@ export function ProfileForm() {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="kokoro">Kokoro 82M</SelectItem>
+                                <SelectItem value="kokoro_vi">Kokoro Vietnamese</SelectItem>
                                 <SelectItem value="qwen_custom_voice">Qwen CustomVoice</SelectItem>
                               </SelectContent>
                             </Select>
@@ -912,9 +956,15 @@ export function ProfileForm() {
                                   type="button"
                                   onClick={() => {
                                     setSelectedPresetVoiceId(voice.voice_id);
-                                    // Auto-set language from voice
+                                    // Auto-set language from voice if supported by current engine
                                     if (voice.language) {
-                                      form.setValue('language', voice.language as LanguageCode);
+                                      const options =
+                                        getLanguageOptionsForEngine(selectedPresetEngine);
+                                      if (options.some((opt) => opt.value === voice.language)) {
+                                        form.setValue('language', voice.language as LanguageCode, {
+                                          shouldValidate: true,
+                                        });
+                                      }
                                     }
                                   }}
                                   className={`text-left px-3 py-2 rounded-md border text-sm transition-colors ${
@@ -926,10 +976,10 @@ export function ProfileForm() {
                                   <div className="font-medium">{voice.name}</div>
                                   <div className="flex gap-1.5 mt-0.5">
                                     <Badge variant="outline" className="text-[10px] h-4 px-1">
-                                      {voice.gender}
+                                      {formatGender(voice.gender)}
                                     </Badge>
                                     <Badge variant="outline" className="text-[10px] h-4 px-1">
-                                      {voice.language}
+                                      {formatLanguageBadge(voice.language)}
                                     </Badge>
                                   </div>
                                 </button>
@@ -1088,10 +1138,10 @@ export function ProfileForm() {
                             return voice ? (
                               <div className="flex gap-1.5">
                                 <Badge variant="outline" className="text-xs">
-                                  {voice.gender}
+                                  {formatGender(voice.gender)}
                                 </Badge>
                                 <Badge variant="outline" className="text-xs">
-                                  {voice.language}
+                                  {formatLanguageBadge(voice.language)}
                                 </Badge>
                               </div>
                             ) : null;
@@ -1207,9 +1257,7 @@ export function ProfileForm() {
                             {...field}
                           />
                         </FormControl>
-                        <FormDescription>
-                          {t('profileForm.fields.personalityHint')}
-                        </FormDescription>
+                        <FormDescription>{t('profileForm.fields.personalityHint')}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -1218,26 +1266,36 @@ export function ProfileForm() {
                   <FormField
                     control={form.control}
                     name="language"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('profileForm.fields.language')}</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {LANGUAGE_OPTIONS.map((lang) => (
-                              <SelectItem key={lang.value} value={lang.value}>
-                                {lang.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const availableLanguageOptions =
+                        isCreating && voiceSource === 'builtin'
+                          ? getLanguageOptionsForEngine(selectedPresetEngine)
+                          : LANGUAGE_OPTIONS;
+                      return (
+                        <FormItem>
+                          <FormLabel>{t('profileForm.fields.language')}</FormLabel>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            disabled={availableLanguageOptions.length === 1}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {availableLanguageOptions.map((lang) => (
+                                <SelectItem key={lang.value} value={lang.value}>
+                                  {lang.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
                   />
 
                   <FormItem>

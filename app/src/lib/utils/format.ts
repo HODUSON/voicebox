@@ -1,5 +1,5 @@
 import { formatDistance } from 'date-fns';
-import { es, fr, ja, zhCN, zhTW } from 'date-fns/locale';
+import { es, fr, ja, vi, zhCN, zhTW } from 'date-fns/locale';
 import i18n from '@/i18n';
 
 export function formatDuration(seconds: number): string {
@@ -10,6 +10,8 @@ export function formatDuration(seconds: number): string {
 
 function getDateLocale() {
   switch (i18n.language) {
+    case 'vi':
+      return vi;
     case 'es':
       return es;
     case 'ja':
@@ -60,6 +62,9 @@ const ENGINE_DISPLAY_NAMES: Record<string, string> = {
   luxtts: 'LuxTTS',
   chatterbox: 'Chatterbox',
   chatterbox_turbo: 'Chatterbox Turbo',
+  tada: 'TADA',
+  kokoro: 'Kokoro',
+  kokoro_vi: 'Kokoro Vietnamese',
 };
 
 export function formatEngineName(engine?: string, modelSize?: string): string {

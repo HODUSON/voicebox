@@ -44,6 +44,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { apiClient } from '@/lib/api/client';
 import type { EffectConfig, GenerationVersionResponse, HistoryResponse } from '@/lib/api/types';
+import { ALL_LANGUAGES, type LanguageCode } from '@/lib/constants/languages';
 import { BOTTOM_SAFE_AREA_PADDING } from '@/lib/constants/ui';
 import {
   useClearFailedGenerations,
@@ -530,7 +531,9 @@ export function HistoryTable() {
                         {gen.profile_name}
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">{gen.language}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {ALL_LANGUAGES[gen.language as LanguageCode] ?? gen.language}
+                        </span>
                         <span className="text-xs text-muted-foreground">
                           {formatEngineName(gen.engine, gen.model_size)}
                         </span>
@@ -765,7 +768,7 @@ export function HistoryTable() {
             {/* End of list indicator */}
             {!hasMore && history.length > 0 && (
               <div className="text-center py-4 text-xs text-muted-foreground">
-                You've reached the end
+                {t('history.endReached')}
               </div>
             )}
           </div>

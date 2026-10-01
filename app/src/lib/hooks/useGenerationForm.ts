@@ -1,11 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import * as z from 'zod';
 import { useToast } from '@/components/ui/use-toast';
 import { apiClient } from '@/lib/api/client';
 import type { EffectConfig } from '@/lib/api/types';
-import { LANGUAGE_CODES, type LanguageCode } from '@/lib/constants/languages';
+import {
+  getLanguageOptionsForEngine,
+  LANGUAGE_CODES,
+  type LanguageCode,
+} from '@/lib/constants/languages';
 import { useGeneration } from '@/lib/hooks/useGeneration';
 import { useModelDownloadToast } from '@/lib/hooks/useModelDownloadToast';
 import { useGenerationSettings } from '@/lib/hooks/useSettings';
@@ -27,6 +32,7 @@ const generationSchema = z.object({
       'chatterbox_turbo',
       'tada',
       'kokoro',
+      'kokoro_vi',
     ])
     .optional(),
   personality: z.boolean().optional(),
@@ -41,6 +47,7 @@ interface UseGenerationFormOptions {
 }
 
 export function useGenerationForm(options: UseGenerationFormOptions = {}) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const generation = useGeneration();
   const addPendingGeneration = useGenerationStore((state) => state.addPendingGeneration);
@@ -58,15 +65,21 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
     enabled: !!downloadingModelName,
   });
 
+  const initialEngine = (selectedEngine as GenerationFormValues['engine']) || 'qwen';
+  const initialLangs = getLanguageOptionsForEngine(initialEngine);
+  const defaultLanguage = initialLangs.some((l) => l.value === 'en')
+    ? 'en'
+    : (initialLangs[0]?.value ?? 'vi');
+
   const form = useForm<GenerationFormValues>({
     resolver: zodResolver(generationSchema),
     defaultValues: {
       text: '',
-      language: 'en',
+      language: defaultLanguage,
       seed: undefined,
       modelSize: '1.7B',
       instruct: '',
-      engine: (selectedEngine as GenerationFormValues['engine']) || 'qwen',
+      engine: initialEngine,
       personality: false,
       ...options.defaultValues,
     },
@@ -78,8 +91,11 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
   ): Promise<void> {
     if (!selectedProfileId) {
       toast({
-        title: 'No profile selected',
-        description: 'Please select a voice profile from the cards above.',
+        title: t('generation.button.selectFirst', 'Chưa chọn hồ sơ giọng nói'),
+        description: t(
+          'generation.placeholder.selectVoice',
+          'Vui lòng chọn một hồ sơ giọng nói từ danh sách bên trên.',
+        ),
         variant: 'destructive',
       });
       return;
@@ -100,9 +116,11 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
                   : 'tada-1b'
                 : engine === 'kokoro'
                   ? 'kokoro'
-                  : engine === 'qwen_custom_voice'
-                    ? `qwen-custom-voice-${data.modelSize}`
-                    : `qwen-tts-${data.modelSize}`;
+                  : engine === 'kokoro_vi'
+                    ? 'kokoro-vi'
+                    : engine === 'qwen_custom_voice'
+                      ? `qwen-custom-voice-${data.modelSize}`
+                      : `qwen-tts-${data.modelSize}`;
       const displayName =
         engine === 'luxtts'
           ? 'LuxTTS'
@@ -116,13 +134,15 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
                   : 'TADA 1B'
                 : engine === 'kokoro'
                   ? 'Kokoro 82M'
-                  : engine === 'qwen_custom_voice'
-                    ? data.modelSize === '1.7B'
-                      ? 'Qwen CustomVoice 1.7B'
-                      : 'Qwen CustomVoice 0.6B'
-                    : data.modelSize === '1.7B'
-                      ? 'Qwen TTS 1.7B'
-                      : 'Qwen TTS 0.6B';
+                  : engine === 'kokoro_vi'
+                    ? 'Kokoro Vietnamese 82M'
+                    : engine === 'qwen_custom_voice'
+                      ? data.modelSize === '1.7B'
+                        ? 'Qwen CustomVoice 1.7B'
+                        : 'Qwen CustomVoice 0.6B'
+                      : data.modelSize === '1.7B'
+                        ? 'Qwen TTS 1.7B'
+                        : 'Qwen TTS 0.6B';
 
       // Check if model needs downloading
       try {

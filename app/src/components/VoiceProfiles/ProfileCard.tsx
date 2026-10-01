@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import type { VoiceProfileResponse } from '@/lib/api/types';
+import { ALL_LANGUAGES, type LanguageCode } from '@/lib/constants/languages';
 import { useDeleteProfile, useExportProfile } from '@/lib/hooks/useProfiles';
 import { cn } from '@/lib/utils/cn';
 import { useUIStore } from '@/stores/uiStore';
@@ -21,6 +22,7 @@ import { useUIStore } from '@/stores/uiStore';
 /** Human-readable display names for preset engine badges. */
 const ENGINE_DISPLAY_NAMES: Record<string, string> = {
   kokoro: 'Kokoro',
+  kokoro_vi: 'Kokoro Vietnamese',
   qwen_custom_voice: 'CustomVoice',
 };
 
@@ -109,26 +111,33 @@ export function ProfileCard({ profile, disabled }: ProfileCardProps) {
           <p className="text-xs text-muted-foreground mb-1.5 line-clamp-2 leading-relaxed">
             {profile.description || t('profiles.card.noDescription')}
           </p>
-          <div className="mb-2 flex items-center gap-1.5">
-            <Badge variant="outline" className="text-xs h-5 px-1.5 text-muted-foreground">
-              {profile.language}
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            <Badge
+              variant="outline"
+              className="text-[11px] h-5 px-1.5 text-muted-foreground whitespace-nowrap shrink-0"
+            >
+              {ALL_LANGUAGES[profile.language as LanguageCode] ?? profile.language}
             </Badge>
             {profile.voice_type === 'preset' && (
-              <Badge variant="secondary" className="text-xs h-5 px-1.5">
+              <Badge
+                variant="secondary"
+                className="text-[11px] h-5 px-1.5 whitespace-nowrap shrink-0"
+              >
                 {ENGINE_DISPLAY_NAMES[profile.preset_engine ?? ''] ?? profile.preset_engine}
               </Badge>
             )}
             {profile.voice_type === 'designed' && (
-              <Badge variant="secondary" className="text-xs h-5 px-1.5">
+              <Badge
+                variant="secondary"
+                className="text-[11px] h-5 px-1.5 whitespace-nowrap shrink-0"
+              >
                 {t('profiles.card.designed')}
               </Badge>
             )}
             {profile.effects_chain && profile.effects_chain.length > 0 && (
-              <Sparkles className="h-3.5 w-3.5 text-accent fill-accent" />
+              <Sparkles className="h-3.5 w-3.5 text-accent fill-accent shrink-0" />
             )}
-            {profile.personality?.trim() && (
-              <Wand2 className="h-3.5 w-3.5 text-accent" />
-            )}
+            {profile.personality?.trim() && <Wand2 className="h-3.5 w-3.5 text-accent shrink-0" />}
           </div>
           <div className="flex gap-0.5 justify-end items-end mt-auto">
             <CircleButton

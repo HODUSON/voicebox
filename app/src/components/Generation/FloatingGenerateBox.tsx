@@ -16,7 +16,11 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { apiClient } from '@/lib/api/client';
-import { getLanguageOptionsForEngine, type LanguageCode } from '@/lib/constants/languages';
+import {
+  ALL_LANGUAGES,
+  getLanguageOptionsForEngine,
+  type LanguageCode,
+} from '@/lib/constants/languages';
 import { useGenerationForm } from '@/lib/hooks/useGenerationForm';
 import { useProfile, useProfiles } from '@/lib/hooks/useProfiles';
 import { useStory } from '@/lib/hooks/useStories';
@@ -151,22 +155,28 @@ export function FloatingGenerateBox({
     | 'chatterbox_turbo'
     | 'tada'
     | 'kokoro'
+    | 'kokoro_vi'
     | 'qwen_custom_voice';
   useEffect(() => {
-    if (selectedProfile?.language) {
-      form.setValue('language', selectedProfile.language as LanguageCode);
-    }
-    // Auto-switch engine to match the profile
+    // Auto-switch engine to match the profile first
     const engine = selectedProfile?.default_engine ?? selectedProfile?.preset_engine;
     if (engine) {
-      form.setValue('engine', engine as EngineValue);
+      form.setValue('engine', engine as EngineValue, {
+        shouldValidate: true,
+      });
     } else if (selectedProfile && selectedProfile.voice_type !== 'preset') {
       // Cloned/designed profile with no default — ensure a compatible (non-preset) engine
       const currentEngine = form.getValues('engine');
-      const presetEngines = new Set(['kokoro', 'qwen_custom_voice']);
+      const presetEngines = new Set(['kokoro', 'kokoro_vi', 'qwen_custom_voice']);
       if (currentEngine && presetEngines.has(currentEngine)) {
         form.setValue('engine', 'qwen');
       }
+    }
+
+    if (selectedProfile?.language) {
+      form.setValue('language', selectedProfile.language as LanguageCode, {
+        shouldValidate: true,
+      });
     }
     // Pre-fill effects from profile defaults
     if (
@@ -196,6 +206,16 @@ export function FloatingGenerateBox({
       form.setValue('personality', false);
     }
   }, [selectedProfile, effectPresets, form]);
+
+  // Ensure form language is always supported by the current engine
+  const activeEngine = form.watch('engine') || 'qwen';
+  const activeLanguage = form.watch('language');
+  useEffect(() => {
+    const allowed = getLanguageOptionsForEngine(activeEngine);
+    if (allowed.length > 0 && !allowed.some((l) => l.value === activeLanguage)) {
+      form.setValue('language', allowed[0].value, { shouldValidate: true });
+    }
+  }, [activeEngine, activeLanguage, form]);
 
   // Auto-resize textarea based on content (only when expanded)
   useEffect(() => {
@@ -418,13 +438,19 @@ export function FloatingGenerateBox({
                                         ? 'bg-accent text-accent-foreground border border-accent hover:bg-accent/90'
                                         : 'bg-card border border-border hover:bg-background/50',
                                     )}
-                                    aria-label={active ? t('generation.persona.ariaLabelActive') : t('generation.persona.ariaLabelInactive')}
+                                    aria-label={
+                                      active
+                                        ? t('generation.persona.ariaLabelActive')
+                                        : t('generation.persona.ariaLabelInactive')
+                                    }
                                     aria-pressed={active}
                                   >
                                     <Wand2 className="h-4 w-4" />
                                   </Button>
                                   <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded-md bg-popover px-3 py-1.5 text-xs text-popover-foreground border border-border opacity-0 transition-opacity group-hover:opacity-100 z-[9999]">
-                                    {active ? t('generation.persona.tooltipActive') : t('generation.persona.tooltipInactive')}
+                                    {active
+                                      ? t('generation.persona.tooltipActive')
+                                      : t('generation.persona.tooltipInactive')}
                                   </span>
                                 </div>
                               </FormControl>
@@ -566,20 +592,34 @@ export function FloatingGenerateBox({
                     </div>
                   )}
 
-
                   <FormField
                     control={form.control}
                     name="language"
                     render={({ field }) => {
-                      const engineLangs = getLanguageOptionsForEngine(
-                        form.watch('engine') || 'qwen',
-                      );
+                      const engine = form.watch('engine') || 'qwen';
+                      const engineLangs = getLanguageOptionsForEngine(engine);
+                      const isCurrentLangValid = engineLangs.some((l) => l.value === field.value);
+                      const effectiveValue = isCurrentLangValid
+                        ? field.value
+                        : (engineLangs[0]?.value ?? 'vi');
+                      const currentLangLabel =
+                        engineLangs.find((l) => l.value === effectiveValue)?.label ??
+                        ALL_LANGUAGES[effectiveValue as LanguageCode] ??
+                        effectiveValue;
+
                       return (
                         <FormItem className="flex-1 space-y-0">
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select
+                            onValueChange={(val) => {
+                              if (val) field.onChange(val);
+                            }}
+                            value={effectiveValue}
+                          >
                             <FormControl>
                               <SelectTrigger className="h-8 text-xs bg-card border-border rounded-full hover:bg-background/50 transition-all">
-                                <SelectValue />
+                                <SelectValue placeholder={currentLangLabel}>
+                                  {currentLangLabel}
+                                </SelectValue>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent side="top">

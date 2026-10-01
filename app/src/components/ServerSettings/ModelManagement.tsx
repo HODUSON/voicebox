@@ -42,6 +42,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { apiClient } from '@/lib/api/client';
 import type { ActiveDownloadTask, HuggingFaceModelInfo, ModelStatus } from '@/lib/api/types';
+import { ALL_LANGUAGES, type LanguageCode } from '@/lib/constants/languages';
 import { useModelDownloadToast } from '@/lib/hooks/useModelDownloadToast';
 import { usePlatform } from '@/platform/PlatformContext';
 import { useServerStore } from '@/stores/serverStore';
@@ -69,6 +70,8 @@ const MODEL_DESCRIPTIONS: Record<string, string> = {
     'HumeAI TADA 3B Multilingual — built on Llama 3.2 3B. Supports 10 languages with high-fidelity voice cloning via text-acoustic dual alignment.',
   kokoro:
     'Kokoro 82M by hexgrad. Tiny 82M-parameter TTS that runs at CPU realtime. Supports 8 languages with pre-built voice styles. Apache 2.0 licensed.',
+  'kokoro-vi':
+    'Kokoro Vietnamese 82M — mô hình TTS nhỏ gọn chạy thời gian thực trên CPU, hỗ trợ tiếng Việt với 14 giọng có sẵn.',
   'qwen-custom-voice-1.7B':
     'Qwen3-TTS CustomVoice 1.7B by Alibaba. 9 premium preset voices with instruct-based style control for tone, emotion, and prosody. Supports 10 languages.',
   'qwen-custom-voice-0.6B':
@@ -95,6 +98,11 @@ function formatDownloads(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
   return n.toString();
+}
+
+function formatLanguageList(languages: string | string[]): string {
+  const list = Array.isArray(languages) ? languages : [languages];
+  return list.map((lang) => ALL_LANGUAGES[lang.toLowerCase() as LanguageCode] ?? lang).join(', ');
 }
 
 function formatLicense(license: string): string {
@@ -782,7 +790,7 @@ export function ModelManagement() {
                                 count: hfModelInfo.cardData.language.length,
                               })
                             : t('models.detail.languagesList', {
-                                list: hfModelInfo.cardData.language.join(', '),
+                                list: formatLanguageList(hfModelInfo.cardData.language),
                               })}
                         </span>
                       </div>
