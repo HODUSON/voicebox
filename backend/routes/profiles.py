@@ -89,6 +89,21 @@ async def list_preset_voices(engine: str):
                 for vid, name, gender, lang in KOKORO_VOICES
             ],
         }
+    if engine == "kokoro_vi":
+        from ..backends.kokoro_vi_backend import KOKORO_VI_VOICES
+
+        return {
+            "engine": engine,
+            "voices": [
+                {
+                    "voice_id": vid,
+                    "name": name,
+                    "gender": gender,
+                    "language": lang,
+                }
+                for vid, name, gender, lang in KOKORO_VI_VOICES
+            ],
+        }
     if engine == "qwen_custom_voice":
         from ..backends.qwen_custom_voice_backend import QWEN_CUSTOM_VOICES
 

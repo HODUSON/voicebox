@@ -52,6 +52,15 @@ en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_
 # for the same reason en_core_web_sm does.
 unidic-lite>=1.0.8
 
+# Kokoro Vietnamese TTS (Vietnamese 82M-param engine)
+# Note: kokoro-vietnamese is installed --no-deps in justfile to avoid pulling gradio.
+# Runtime dependencies for Vietnamese G2P:
+# vig2p: LICENSE UNVERIFIED (blocks public release/distribution, allows local dev).
+# sea-g2p: Apache-2.0 VERIFIED.
+vig2p>=0.1.0
+sea-g2p>=0.7.6
+loguru>=0.7.0
+
 # Audio processing
 audioop-lts>=0.2.1; python_version >= "3.13"
 librosa>=0.10.0
