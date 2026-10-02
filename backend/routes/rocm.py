@@ -26,6 +26,10 @@ async def download_rocm_backend():
     """Download the ROCm backend binary."""
     from ..services import rocm
 
+    unsupported_reason = rocm.get_rocm_download_unsupported_reason()
+    if unsupported_reason:
+        raise HTTPException(status_code=409, detail=unsupported_reason)
+
     progress_manager = get_progress_manager()
     existing = progress_manager.get_progress(rocm.PROGRESS_KEY)
     if existing and existing.get("status") in {"downloading", "extracting"}:

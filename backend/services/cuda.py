@@ -31,7 +31,9 @@ GITHUB_RELEASES_URL = "https://github.com/jamiepine/voicebox/releases/download"
 
 PROGRESS_KEY = "cuda-backend"
 
-CUDA_DOWNLOAD_UNSUPPORTED_REASON = "Downloadable CUDA backend releases are currently only published for Windows."
+CUDA_DOWNLOAD_UNSUPPORTED_REASON = (
+    "Downloadable CUDA backend releases are temporarily disabled until official HODUSON release artifacts are published."
+)
 
 # The current expected CUDA libs version.  Bump this when we change the
 # CUDA toolkit version or torch's CUDA dependency changes (e.g. cu126 -> cu128).
@@ -66,8 +68,8 @@ def get_cuda_exe_name() -> str:
 
 
 def is_cuda_download_supported() -> bool:
-    """Return whether this platform has a matching CUDA release asset."""
-    return sys.platform == "win32"
+    """Return whether CUDA backend downloading is currently supported."""
+    return False
 
 
 def get_cuda_download_unsupported_reason() -> str | None:
@@ -133,6 +135,7 @@ def get_cuda_status() -> dict:
         "cuda_libs_version": cuda_libs_version,
         "download_supported": unsupported_reason is None,
         "unsupported_reason": unsupported_reason,
+        "download_unsupported_reason": unsupported_reason,
         "downloading": progress is not None and progress.get("status") == "downloading",
         "download_progress": progress,
     }

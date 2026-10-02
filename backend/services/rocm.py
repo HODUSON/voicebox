@@ -32,6 +32,10 @@ GITHUB_RELEASES_URL = "https://github.com/jamiepine/voicebox/releases/download"
 
 PROGRESS_KEY = "rocm-backend"
 
+ROCM_DOWNLOAD_UNSUPPORTED_REASON = (
+    "Downloadable ROCm backend releases are temporarily disabled until official HODUSON release artifacts are published."
+)
+
 # The current expected ROCm libs version.  Bump this when we change the
 # ROCm toolkit version or torch's ROCm dependency changes (e.g. rocm7.2 -> rocm7.4).
 ROCM_LIBS_VERSION = "rocm7.2-v1"
@@ -98,6 +102,23 @@ def is_rocm_active() -> bool:
     return os.environ.get("VOICEBOX_BACKEND_VARIANT") == "rocm"
 
 
+def is_rocm_download_supported() -> bool:
+    """Return whether ROCm backend downloading is currently supported."""
+    return False
+
+
+def get_rocm_download_unsupported_reason() -> str | None:
+    """Explain why ROCm release download is not available."""
+    return ROCM_DOWNLOAD_UNSUPPORTED_REASON
+
+
+def ensure_rocm_download_supported() -> None:
+    """Raise if downloading would fetch an unsupported asset."""
+    reason = get_rocm_download_unsupported_reason()
+    if reason:
+        raise RuntimeError(reason)
+
+
 def get_rocm_status() -> dict:
     """Get current ROCm backend status for the API."""
     progress_manager = get_progress_manager()
@@ -110,6 +131,9 @@ def get_rocm_status() -> dict:
         "active": is_rocm_active(),
         "binary_path": str(rocm_path) if rocm_path else None,
         "rocm_libs_version": rocm_libs_version,
+        "download_supported": is_rocm_download_supported(),
+        "unsupported_reason": get_rocm_download_unsupported_reason(),
+        "download_unsupported_reason": get_rocm_download_unsupported_reason(),
         "downloading": progress is not None and progress.get("status") == "downloading",
         "download_progress": progress,
     }
@@ -255,6 +279,7 @@ async def download_rocm_binary(version: Optional[str] = None):
 
 async def _download_rocm_binary_locked(version: Optional[str] = None):
     """Inner implementation of download_rocm_binary, called under _download_lock."""
+    ensure_rocm_download_supported()
     import httpx
 
     if version is None:
@@ -427,6 +452,11 @@ async def check_and_update_rocm_binary():
     rocm_path = get_rocm_binary_path()
     if not rocm_path:
         return  # No ROCm binary installed, nothing to update
+
+    unsupported_reason = get_rocm_download_unsupported_reason()
+    if unsupported_reason:
+        logger.info("Skipping ROCm backend auto-update: %s", unsupported_reason)
+        return
 
     if is_rocm_active():
         logger.info("ROCm backend is active; skipping auto-update to avoid replacing the running backend")

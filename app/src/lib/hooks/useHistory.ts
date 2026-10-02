@@ -58,7 +58,7 @@ export function useExportGeneration() {
 
       await platform.filesystem.saveFile(filename, blob, [
         {
-          name: 'Voicebox Generation',
+          name: 'HODUSON Voice Studio Generation',
           extensions: ['zip'],
         },
       ]);

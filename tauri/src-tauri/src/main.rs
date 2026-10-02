@@ -35,7 +35,7 @@ fn build_dictate_window(app: &tauri::AppHandle) -> tauri::Result<tauri::WebviewW
         DICTATE_WINDOW_LABEL,
         WebviewUrl::App("?view=dictate".into()),
     )
-    .title("Voicebox Dictate")
+    .title("HODUSON Voice Studio — Dictate")
     .inner_size(DICTATE_WINDOW_WIDTH, DICTATE_WINDOW_HEIGHT)
     .decorations(false)
     .transparent(true)
@@ -316,7 +316,7 @@ async fn start_server(
                         println!("Health check failed — port is occupied by a non-Voicebox process");
                         return Err(format!(
                             "Port {} is already in use by another application ({}). \
-                             Close it or change the Voicebox server port.",
+                             Close it or change the HODUSON Voice Studio server port.",
                             SERVER_PORT, command
                         ));
                     }
@@ -347,7 +347,7 @@ async fn start_server(
             }
             return Err(format!(
                 "Port {} is already in use by another application. \
-                 Close the other application or change the Voicebox port.",
+                 Close the other application or change the HODUSON Voice Studio port.",
                 SERVER_PORT
             ));
         }
@@ -1222,7 +1222,7 @@ async fn paste_final_text(
     }
     if !accessibility::is_trusted() {
         return Err(
-            "Accessibility permission required for auto-paste. Open System Settings → Privacy & Security → Accessibility and enable Voicebox."
+            "Accessibility permission required for auto-paste. Open System Settings → Privacy & Security → Accessibility and enable HODUSON Voice Studio."
                 .into(),
         );
     }
@@ -1273,7 +1273,7 @@ async fn debug_focus_roundtrip(
 ) -> Result<serde_json::Value, String> {
     if !accessibility::is_trusted() {
         return Err(
-            "Accessibility permission not granted. Open System Settings → Privacy & Security → Accessibility and enable Voicebox."
+            "Accessibility permission not granted. Open System Settings → Privacy & Security → Accessibility and enable HODUSON Voice Studio."
                 .into(),
         );
     }
@@ -1320,7 +1320,7 @@ async fn debug_paste_text(
 ) -> Result<serde_json::Value, String> {
     if !accessibility::is_trusted() {
         return Err(
-            "Accessibility permission not granted. Open System Settings → Privacy & Security → Accessibility and enable Voicebox, then try again."
+            "Accessibility permission not granted. Open System Settings → Privacy & Security → Accessibility and enable HODUSON Voice Studio, then try again."
                 .into(),
         );
     }

@@ -135,13 +135,13 @@
       },
       "inputMonitoring": {
         "label": "Quyền giám sát nhập liệu",
-        "ready": "macOS cho phép Voicebox phát hiện phím tắt toàn cục.",
-        "missing": "macOS cần cho phép Voicebox phát hiện phím tắt toàn cục.",
+        "ready": "macOS cho phép HODUSON Voice Studio phát hiện phím tắt toàn cục.",
+        "missing": "macOS cần cho phép HODUSON Voice Studio phát hiện phím tắt toàn cục.",
         "openSettings": "Mở Cài đặt"
       },
       "accessibility": {
         "label": "Quyền trợ năng",
-        "ready": "Voicebox có thể dán bản chép lời vào các ứng dụng khác.",
+        "ready": "HODUSON Voice Studio có thể dán bản chép lời vào các ứng dụng khác.",
         "missing": "Cần thiết để bản chép lời có thể dán vào ứng dụng đang mở.",
         "openSettings": "Mở Cài đặt"
       }
@@ -149,19 +149,19 @@
     "permissions": {
       "accessibility": {
         "title": "Cấp quyền Trợ năng để bật tính năng tự động dán",
-        "body": "Voicebox cần quyền tại <path>Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Trợ năng</path> để dán văn bản chép lời vào các ứng dụng khác. Nếu không có quyền này, bản đọc của bạn vẫn được lưu trong tab Bản ghi.",
+        "body": "HODUSON Voice Studio cần quyền tại <path>Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Trợ năng</path> để dán văn bản chép lời vào các ứng dụng khác. Nếu không có quyền này, bản đọc của bạn vẫn được lưu trong tab Bản ghi.",
         "openSettings": "Mở Cài đặt",
         "recheck": "Tôi đã bật quyền này",
         "rechecking": "Đang kiểm tra…",
-        "stillMissing": "Vẫn chưa phát hiện quyền. macOS thường yêu cầu thoát và mở lại Voicebox sau khi thay đổi quyền."
+        "stillMissing": "Vẫn chưa phát hiện quyền. macOS thường yêu cầu thoát và mở lại HODUSON Voice Studio sau khi thay đổi quyền."
       },
       "inputMonitoring": {
         "title": "Cấp quyền Giám sát nhập liệu để bật phím tắt toàn cục",
-        "body": "Voicebox cần quyền tại <path>Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Giám sát nhập liệu</path> để nhận diện tổ hợp phím đọc chính tả. Nút gạt đã bật nhưng macOS đang chặn sự kiện bàn phím cho đến khi bạn cho phép.",
+        "body": "HODUSON Voice Studio cần quyền tại <path>Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Giám sát nhập liệu</path> để nhận diện tổ hợp phím đọc chính tả. Nút gạt đã bật nhưng macOS đang chặn sự kiện bàn phím cho đến khi bạn cho phép.",
         "openSettings": "Mở Cài đặt",
         "recheck": "Tôi đã bật quyền này",
         "rechecking": "Đang kiểm tra…",
-        "stillMissing": "Vẫn chưa phát hiện quyền. macOS thường yêu cầu thoát và mở lại Voicebox sau khi thay đổi quyền."
+        "stillMissing": "Vẫn chưa phát hiện quyền. macOS thường yêu cầu thoát và mở lại HODUSON Voice Studio sau khi thay đổi quyền."
       }
     }
   },
@@ -753,7 +753,7 @@
     },
     "language": {
       "label": "Ngôn ngữ",
-      "description": "Chọn ngôn ngữ hiển thị cho giao diện Voicebox."
+      "description": "Chọn ngôn ngữ hiển thị cho giao diện HODUSON Voice Studio."
     },
     "theme": {
       "label": "Giao diện",
@@ -774,7 +774,7 @@
       },
       "serverUrl": {
         "title": "Địa chỉ máy chủ",
-        "description": "Địa chỉ máy chủ backend Voicebox của bạn.",
+        "description": "Địa chỉ máy chủ backend HODUSON Voice Studio của bạn.",
         "invalidUrl": "Vui lòng nhập URL hợp lệ",
         "updatedTitle": "Đã cập nhật URL máy chủ",
         "updatedDescription": "Đã kết nối tới {{url}}"
@@ -829,7 +829,7 @@
       },
       "api": {
         "title": "Truy cập API",
-        "description": "Tích hợp Voicebox vào quy trình của bạn qua REST API tại <code>{{url}}</code>",
+        "description": "Tích hợp HODUSON Voice Studio vào quy trình của bạn qua REST API tại <code>{{url}}</code>",
         "viewReference": "Xem toàn bộ tài liệu API",
         "endpoints": {
           "generate": "Tạo giọng nói",
@@ -918,7 +918,7 @@
         },
         "autoPaste": {
           "title": "Tự động dán vào ô văn bản đang chọn",
-          "description": "Nếu một ô nhập liệu đang được trỏ trong ứng dụng khác, dán trực tiếp vào đó. Voicebox sẽ lưu và khôi phục nội dung cũ trong khay nhớ tạm."
+          "description": "Nếu một ô nhập liệu đang được trỏ trong ứng dụng khác, dán trực tiếp vào đó. HODUSON Voice Studio sẽ lưu và khôi phục nội dung cũ trong khay nhớ tạm."
         }
       },
       "transcription": {
@@ -926,7 +926,7 @@
         "description": "Chọn mô hình chuyển giọng nói thành văn bản cho các bản ghi của bạn.",
         "model": {
           "title": "Mô hình chép lời",
-          "description": "Whisper được tích hợp sẵn trong Voicebox và chạy hoàn toàn cục bộ trên máy tính.",
+          "description": "Whisper được tích hợp sẵn trong HODUSON Voice Studio và chạy hoàn toàn cục bộ trên máy tính.",
           "base": "Whisper Base · 74M · {{tail}}",
           "small": "Whisper Small · 244M · {{tail}}",
           "medium": "Whisper Medium · 769M · {{tail}}",
@@ -1002,7 +1002,7 @@
       },
       "storage": {
         "title": "Lưu trữ",
-        "description": "Bản ghi được lưu thành các cặp tệp âm thanh và văn bản trong thư mục dữ liệu Voicebox.",
+        "description": "Bản ghi được lưu thành các cặp tệp âm thanh và văn bản trong thư mục dữ liệu HODUSON Voice Studio.",
         "retention": {
           "title": "Thời gian lưu giữ",
           "description": "Thời gian lưu trữ bản ghi trước khi tự động dọn dẹp. Áp dụng cho cả âm thanh và bản chép lời.",
@@ -1019,7 +1019,7 @@
       },
       "sidebar": {
         "aboutTitle": "Về tính năng Bản ghi",
-        "aboutBody": "Giữ phím tắt ở bất cứ đâu trên máy tính, nói và Voicebox sẽ chuyển giọng nói thành văn bản. Bạn có thể nghe lại bằng bất kỳ giọng nhân bản nào, dán vào ứng dụng khác hoặc tích hợp vào trợ lý lập trình.",
+        "aboutBody": "Giữ phím tắt ở bất cứ đâu trên máy tính, nói và HODUSON Voice Studio sẽ chuyển giọng nói thành văn bản. Bạn có thể nghe lại bằng bất kỳ giọng nhân bản nào, dán vào ứng dụng khác hoặc tích hợp vào trợ lý lập trình.",
         "differencesTitle": "Điểm khác biệt",
         "local": {
           "title": "Hoàn toàn cục bộ.",
@@ -1035,14 +1035,14 @@
         },
         "windowsCaveat": {
           "title": "Lưu ý trên Windows",
-          "body": "Phím tắt có thể không kích hoạt khi cửa sổ ứng dụng Voicebox hoặc ứng dụng đang chạy dưới quyền Administrator đang được focus."
+          "body": "Phím tắt có thể không kích hoạt khi cửa sổ ứng dụng HODUSON Voice Studio hoặc ứng dụng đang chạy dưới quyền Administrator đang được focus."
         }
       }
     },
     "mcp": {
       "install": {
         "title": "Cài đặt vào AI Agent của bạn",
-        "description": "Voicebox chạy một máy chủ MCP cục bộ khi ứng dụng mở. Dán một trong các đoạn cấu hình sau vào agent của bạn.",
+        "description": "HODUSON Voice Studio chạy một máy chủ MCP cục bộ khi ứng dụng mở. Dán một trong các đoạn cấu hình sau vào agent của bạn.",
         "http": {
           "title": "HTTP (Khuyên dùng)",
           "description": "Dành cho các ứng dụng hỗ trợ HTTP MCP — Claude Code, Cursor, Windsurf, VS Code."
@@ -1083,7 +1083,7 @@
       },
       "sidebar": {
         "aboutTitle": "Về MCP",
-        "aboutBody": "Model Context Protocol cho phép các trợ lý AI như Claude Code, Cursor, Windsurf gọi các công cụ của Voicebox: đọc văn bản bằng giọng nhân bản, chép lời âm thanh, tra cứu bản ghi.",
+        "aboutBody": "Model Context Protocol cho phép các trợ lý AI như Claude Code, Cursor, Windsurf gọi các công cụ của HODUSON Voice Studio: đọc văn bản bằng giọng nhân bản, chép lời âm thanh, tra cứu bản ghi.",
         "toolsTitle": "Công cụ khả dụng",
         "tools": {
           "speak": "Đọc văn bản bằng hồ sơ giọng nói.",
@@ -1143,7 +1143,7 @@
         "deleteCuda": "Không thể xóa backend CUDA",
         "deleteRocm": "Không thể xóa backend ROCm"
       },
-      "footer": "Voicebox tự động phát hiện và sử dụng GPU tốt nhất trên hệ thống của bạn. Trên Mac Apple Silicon, MLX chạy trực tiếp trên Neural Engine và GPU. Trên Windows, bạn có thể tải backend CUDA (NVIDIA) hoặc ROCm (AMD) tùy chọn. Khi không có GPU, Voicebox sẽ chạy trên CPU — tất cả các công cụ vẫn hoạt động bình thường, chỉ chậm hơn.",
+      "footer": "HODUSON Voice Studio tự động phát hiện và sử dụng GPU tốt nhất trên hệ thống của bạn. Trên Mac Apple Silicon, MLX chạy trực tiếp trên Neural Engine và GPU. Trên Windows, bạn có thể tải backend CUDA (NVIDIA) hoặc ROCm (AMD) tùy chọn. Khi không có GPU, HODUSON Voice Studio sẽ chạy trên CPU — tất cả các công cụ vẫn hoạt động bình thường, chỉ chậm hơn.",
       "rocm": {
         "title": "Backend AMD ROCm",
         "activeTitle": "Backend ROCm đang hoạt động",
@@ -1184,9 +1184,10 @@
     },
     "about": {
       "tagline": "Phòng thu tổng hợp giọng nói mã nguồn mở. Nhân bản giọng, tạo lời nói, áp dụng hiệu ứng và xây dựng ứng dụng thoại — tất cả đều chạy cục bộ trên máy tính của bạn.",
-      "createdBy": "Được phát triển bởi",
+      "createdBy": "Được duy trì bởi",
       "buyCoffee": "Mời tôi một ly cà phê",
-      "license": "Phát hành theo giấy phép <link>MIT</link>"
+      "license": "Phát hành theo giấy phép <link>MIT</link>",
+      "attribution": "Được phát triển dựa trên dự án mã nguồn mở <upstreamLink>Voicebox của Jamie Pine & cộng tác viên</upstreamLink>."
     }
   },
   "models": {
