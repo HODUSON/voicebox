@@ -14,6 +14,7 @@ mod key_codes;
 mod keyboard_layout;
 mod speak_monitor;
 mod synthetic_keys;
+mod migration;
 
 use std::sync::Mutex;
 use tauri::{command, State, Manager, WindowEvent, Emitter, Listener, RunEvent, WebviewUrl, WebviewWindowBuilder, PhysicalPosition};
@@ -411,6 +412,10 @@ async fn start_server(
         .path()
         .app_data_dir()
         .map_err(|e| format!("Failed to get app data dir: {}", e))?;
+
+    // Perform safe first-run migration from legacy sh.voicebox.app if needed
+    migration::run_migration_if_needed(&data_dir)
+        .map_err(|e| format!("HODUSON data migration failed. Your old Voicebox data has NOT been deleted. Close Voicebox and retry. Details: {}", e))?;
 
     // Ensure data directory exists
     std::fs::create_dir_all(&data_dir)
@@ -976,7 +981,7 @@ fn stop_audio_playback(
 /// `FocusSnapshot::bundle_id` on the current platform — reverse-DNS bundle
 /// id on macOS, lowercased exe basename on Windows/Linux.
 #[cfg(target_os = "macos")]
-const VOICEBOX_BUNDLE_ID: &str = "sh.voicebox.app";
+const VOICEBOX_BUNDLE_ID: &str = "io.github.hoduson.voicestudio";
 #[cfg(target_os = "windows")]
 const VOICEBOX_BUNDLE_ID: &str = "voicebox.exe";
 #[cfg(not(any(target_os = "macos", target_os = "windows")))]
