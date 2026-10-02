@@ -54,10 +54,8 @@ unidic-lite>=1.0.8
 
 # Kokoro Vietnamese TTS (Vietnamese 82M-param engine)
 # Note: kokoro-vietnamese is installed --no-deps in justfile to avoid pulling gradio.
-# Runtime dependencies for Vietnamese G2P:
-# vig2p: LICENSE UNVERIFIED (blocks public release/distribution, allows local dev).
+# Runtime dependencies for Vietnamese G2P (uses independent backend.phonemizers.vietnamese_kokoro):
 # sea-g2p: Apache-2.0 VERIFIED.
-vig2p>=0.1.0
 sea-g2p>=0.7.6
 loguru>=0.7.0
 

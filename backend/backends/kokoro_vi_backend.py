@@ -9,8 +9,8 @@ Uses pre-built Vietnamese voice style vectors (14 preset voices).
 
 Licensing:
 - Kokoro-Vietnamese upstream source: Apache-2.0
-- Dependency and model licensing are tracked separately
-- vig2p license remains unverified and blocks public distribution (local dev/testing only)
+- sea-g2p: Apache-2.0 (direct dependency)
+- vig2p dependency removed; replaced by independent Vietnamese phonemizer adapter (backend.phonemizers.vietnamese_kokoro)
 """
 
 import asyncio
@@ -107,6 +107,12 @@ class KokoroViTTSBackend:
             is_cached = self._is_model_cached()
 
             with model_load_progress(model_name, is_cached):
+                import kokoro_vietnamese.core
+                from ..phonemizers.vietnamese_kokoro import phonemize_vietnamese
+
+                # Override kokoro_vietnamese phonemizer with independent implementation
+                kokoro_vietnamese.core.phonemize = phonemize_vietnamese
+
                 from kokoro_vietnamese import KokoroVietnamese
 
                 logger.info("Loading Kokoro Vietnamese 82M on CPU...")
