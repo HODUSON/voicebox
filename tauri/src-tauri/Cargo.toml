@@ -1,10 +1,11 @@
 [package]
 name = "voicebox"
-version = "0.5.0"
-description = "A production-quality desktop app for Qwen3-TTS voice cloning and generation"
-authors = ["you"]
-license = ""
-repository = ""
+version = "0.6.0"
+description = "A multi-engine desktop voice studio featuring Kokoro Vietnamese and Qwen3-TTS"
+authors = ["HODUSON", "Voicebox Contributors"]
+license = "MIT"
+repository = "https://github.com/HODUSON/voicebox"
+homepage = "https://github.com/HODUSON/voicebox"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

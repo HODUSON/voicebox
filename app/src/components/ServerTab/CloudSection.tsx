@@ -84,8 +84,8 @@ export function CloudSection() {
 
   return (
     <SettingSection
-      title="Voicebox Cloud"
-      description="End-to-end encrypted backup & sync across your devices."
+      title="Voicebox Cloud (Upstream Service)"
+      description="End-to-end encrypted backup & sync provided by upstream Voicebox service."
     >
       <SettingRow
         title={connected ? 'Connected' : 'Account'}
