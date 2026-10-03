@@ -41,6 +41,7 @@ This document contains licensing, copyright, and third-party attribution notices
 
 - **Component:** sea-g2p
 - **Author:** Phạm Nguyễn Ngọc Bảo
+- **Installed & Tested Version:** `0.10.0` (Pinned: `sea-g2p==0.10.0`)
 - **Purpose:** Rule-based and dictionary-driven grapheme-to-phoneme converter for Southeast Asian languages, used independently for Vietnamese phonemization.
 - **Source:** https://github.com/pnnbao97/sea-g2p (PyPI: `sea-g2p`)
 - **License:** Apache License 2.0
@@ -151,11 +152,125 @@ This document contains licensing, copyright, and third-party attribution notices
 - **Distribution & License Texts:**
   - Exact GPLv3 license text: `licenses/THIRD_PARTY_LICENSES/pedalboard-GPL-3.0.txt`
   - Exact upstream notice text: `licenses/THIRD_PARTY_LICENSES/pedalboard-NOTICE.txt`
-  - **Corresponding Source Release Gate:** Before any HODUSON Voice Studio binary is publicly distributed, the complete corresponding source for that exact release, including build scripts and modifications required to reproduce the distributed covered components, must be made publicly accessible at no further charge and clearly linked next to the binary release. (Current local source for release v0.6.0 is uncommitted and not yet published on GitHub; public source release will occur concurrently with the official binary release).
+
+### phonemizer-fork
+- **Component:** `phonemizer-fork`
+- **Installed Version:** `3.3.2`
+- **Purpose:** Multilingual text-to-phoneme conversion library. Required at runtime by upstream `misaki.espeak` (imported during `kokoro.pipeline` initialization for standard Kokoro English G2P synthesis).
+- **Source:** https://github.com/thewh1teagle/phonemizer-fork (Fork of https://github.com/bootphon/phonemizer)
+- **License:** GNU General Public License v3.0 or later (GPL-3.0-or-later)
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+- **Upstream License Text:** Preserved under GPLv3 terms (see `licenses/THIRD_PARTY_LICENSES/pedalboard-GPL-3.0.txt` for verbatim GPL-3.0 text).
+
+### espeakng-loader
+- **Component:** `espeakng-loader`
+- **Installed Version:** `0.2.4`
+- **Purpose:** Shared library loader and runtime binary assets for eSpeak NG. Required at runtime by `misaki.espeak` to locate and load `espeak-ng.dll` and phonetic data tables (`espeak-ng-data`).
+- **Source:** https://github.com/thewh1teagle/espeakng-loader (loader) and https://github.com/espeak-ng/espeak-ng (eSpeak NG engine)
+- **License:** MIT License for Python loader wrapper; GNU General Public License v3.0 or later (GPL-3.0-or-later) for bundled native binaries (`espeak-ng.dll`) and dictionary/voice assets.
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+
+### Strong Copyleft Distribution Note & Corresponding Source Release Gate
+The strong copyleft runtime dependencies bundled into the production backend executable `voicebox-server.exe` carry the following exact licenses:
+- `pedalboard` 0.9.25: **GNU General Public License v3.0 (GPL-3.0)**
+- `phonemizer-fork` 3.3.2: **GNU General Public License v3.0 or later (GPL-3.0-or-later)**
+- `espeak-ng` native runtime assets loaded through `espeakng-loader`: **GNU General Public License v3.0 or later (GPL-3.0-or-later)** according to verified upstream source.
+
+**Corresponding Source Release Gate:**
+- **PUBLIC BINARY RELEASE:** `BLOCKED` until matching v0.6.0 corresponding source code and release tag are published to the repository (https://github.com/HODUSON/voicebox).
+- **Internal local installer testing:** `ALLOWED`.
 
 ---
 
-## 8. Rust Desktop & Audio Libraries
+## 8. Weak / File-Level Copyleft Runtime Dependencies (LGPL-2.1 & MPL-2.0)
+
+### num2words
+- **Component:** `num2words`
+- **Installed Version:** `0.5.14` (Pinned: `num2words==0.5.14`)
+- **Purpose:** Number-to-words conversion across multiple languages, utilized in text normalization preprocessing pipelines.
+- **Source:** https://github.com/savoirfairelinux/num2words
+- **License:** GNU Lesser General Public License v2.1 or later (LGPL-2.1-or-later)
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+- **Canonical License Text:** Available in `licenses/THIRD_PARTY_LICENSES/LGPL-2.1.txt`.
+- **Distribution Note:** Included as pure-Python modules within the frozen runtime payload. Corresponding source code for `num2words` 0.5.14 is publicly available upstream at https://github.com/savoirfairelinux/num2words.
+
+### soxr (python-soxr)
+- **Component:** `soxr`
+- **Installed Version:** `1.1.0` (Pinned: `soxr==1.1.0`)
+- **Purpose:** High-speed, high-quality 1D audio sample-rate conversion wrapper around the SoX Resampler library (`libsoxr`).
+- **Source:** https://github.com/dofuuz/python-soxr
+- **License:** GNU Lesser General Public License v2.1 or later (LGPL-2.1-or-later) (Core C library `libsoxr`: LGPL-2.1+; Python wrapper: LGPL-2.1+; PFFFT component: BSD-like).
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+- **Canonical License Text:** Available in `licenses/THIRD_PARTY_LICENSES/LGPL-2.1.txt`.
+- **Distribution Note:** Binary extension module linked in the frozen sidecar. Corresponding source code is publicly accessible at https://github.com/dofuuz/python-soxr and https://sourceforge.net/projects/soxr/.
+
+### certifi
+- **Component:** `certifi`
+- **Installed Version:** `2026.7.22`
+- **Purpose:** Curated collection of Root Certificates for validating SSL/TLS certificates while making network requests.
+- **Source:** https://github.com/certifi/python-certifi
+- **License:** Mozilla Public License 2.0 (MPL-2.0)
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+- **Canonical License Text:** Available in `licenses/THIRD_PARTY_LICENSES/MPL-2.0.txt`.
+
+### orjson
+- **Component:** `orjson`
+- **Installed Version:** `3.12.0`
+- **Purpose:** Fast, correct JSON library for Python.
+- **Source:** https://github.com/ijl/orjson
+- **License:** `MPL-2.0 AND (Apache-2.0 OR MIT)`
+- **Classification:** `MIXED / MPL OBLIGATION` (Weak / File-Level Copyleft). Because upstream licensing contains the conjunction `AND`, MPL-2.0 obligations remain active for covered components. Canonical MPL-2.0 text is bundled in `licenses/THIRD_PARTY_LICENSES/MPL-2.0.txt`.
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+
+### tqdm
+- **Component:** `tqdm`
+- **Installed Version:** `4.70.1`
+- **Purpose:** Extensible progress meter for loops and command-line interfaces.
+- **Source:** https://github.com/tqdm/tqdm
+- **License:** `MPL-2.0 AND MIT` (file/contribution-level licensing)
+- **Classification:** `MIXED / MPL OBLIGATION` (Weak / File-Level Copyleft). Upstream `LICENCE` contains both MIT and MPL-2.0 terms applying at the file/contribution level. Canonical MPL-2.0 text is bundled in `licenses/THIRD_PARTY_LICENSES/MPL-2.0.txt`.
+- **Bundled Status:** Bundled in `voicebox-server.exe` sidecar.
+
+---
+
+## 9. Build Tools & Embedded Bootloader Licensing (PyInstaller)
+
+### PyInstaller
+- **Component:** `pyinstaller`
+- **Installed Version:** `6.22.3`
+- **Purpose:** Build-time packaging tooling used solely to create standalone Windows executables (`voicebox-server.exe`, `voicebox-mcp.exe`).
+- **Source:** https://github.com/pyinstaller/pyinstaller
+- **License Classification:**
+  - Bootloader & loader embedded files: `GPL-2.0-or-later WITH Bootloader Exception`
+  - Runtime hooks & helper modules: `Apache-2.0`
+- **Exact License File:** `licenses/THIRD_PARTY_LICENSES/PyInstaller-COPYING.txt`
+- **Bootloader Exception Text:**
+  ```text
+  Bootloader Exception
+  --------------------
+  In addition to the permissions in the GNU General Public License, the
+  authors give you unlimited permission to link or embed compiled bootloader
+  and related files into combinations with other programs, and to distribute
+  those combinations without any restriction coming from the use of those
+  files. (The General Public License restrictions do apply in other respects;
+  for example, they cover modification of the files, and distribution when
+  not linked into a combined executable.)
+  ```
+- **Distribution Note:** Under the Bootloader Exception, bundling the Python application using PyInstaller does **not** cause the application itself or its independent modules to become subject to the GNU General Public License v2.
+
+### pyinstaller-hooks-contrib
+- **Component:** `pyinstaller-hooks-contrib`
+- **Installed Version:** `2026.8`
+- **Purpose:** Community-maintained hooks for PyInstaller.
+- **Source:** https://github.com/pyinstaller/pyinstaller-hooks-contrib
+- **Actual Bundled Files:** Runtime hooks only (`_pyinstaller_hooks_contrib/rthooks/*`)
+- **Runtime Hooks License:** `Apache-2.0`
+- **Standard GPL Hooks:** `BUILD-TIME ONLY / NOT BUNDLED` (Standard hooks run only during compilation on the build machine and are not packaged into runtime executables).
+- **Classification:** Build Tool / Runtime Hook (Permissive runtime hook).
+
+---
+
+## 10. Rust Desktop & Audio Libraries
 
 ### Tauri Framework
 - **Component:** `tauri`, `tauri-build`, `tauri-plugin-*`
@@ -182,7 +297,7 @@ This document contains licensing, copyright, and third-party attribution notices
 
 ---
 
-## 9. Core Python Utility Packages
+## 11. Core Python Utility Packages
 
 | Package | Version | License | Copyright / Source |
 | :--- | :--- | :--- | :--- |
@@ -202,7 +317,7 @@ This document contains licensing, copyright, and third-party attribution notices
 
 ---
 
-## 10. Packaging & Distribution of Legal Files
+## 12. Packaging & Distribution of Legal Files
 
 All legal notices and full text licenses are bundled into the desktop installer via Tauri v2 `bundle.resources` mapping:
 
@@ -213,10 +328,12 @@ licenses/
 └── THIRD_PARTY_LICENSES/
     ├── Apache-2.0.txt
     ├── BSD-3-Clause.txt
+    ├── LGPL-2.1.txt
     ├── MIT.txt
     ├── MPL-2.0.txt
     ├── pedalboard-GPL-3.0.txt
-    └── pedalboard-NOTICE.txt
+    ├── pedalboard-NOTICE.txt
+    └── PyInstaller-COPYING.txt
 ```
 
 End users installing HODUSON Voice Studio receive a complete, unbundled copy of these legal files within the installed application directory.

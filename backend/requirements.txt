@@ -43,6 +43,11 @@ torchaudio
 # Kokoro TTS (lightweight 82M-param engine)
 kokoro>=0.9.4
 misaki[en,ja,zh]>=0.9.4
+# Strong copyleft transitive dependencies pinned for release reproducibility & GPL license lock:
+phonemizer-fork==3.3.2
+espeakng-loader==0.2.4
+# Weak copyleft transitive dependency pinned for misaki text normalization & LGPL-2.1 license lock:
+num2words==0.5.14
 # spacy model for misaki English G2P — must be pre-installed or misaki
 # tries spacy.cli.download() at runtime which crashes frozen builds
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
@@ -55,17 +60,20 @@ unidic-lite>=1.0.8
 # Kokoro Vietnamese TTS (Vietnamese 82M-param engine)
 # Note: kokoro-vietnamese is installed --no-deps in justfile to avoid pulling gradio.
 # Runtime dependencies for Vietnamese G2P (uses independent backend.phonemizers.vietnamese_kokoro):
-# sea-g2p: Apache-2.0 VERIFIED.
-sea-g2p>=0.7.6
+# sea-g2p: Apache-2.0 VERIFIED. Pinned to exact tested version 0.10.0 for reproducible G2P dictionary outputs.
+sea-g2p==0.10.0
 loguru>=0.7.0
 
 # Audio processing
 audioop-lts>=0.2.1; python_version >= "3.13"
 librosa>=0.10.0
+# Weak copyleft transitive dependency pinned for librosa resampler & LGPL-2.1 license lock:
+soxr==1.1.0
 soundfile>=0.12.0
 numpy>=1.24.0,<2.0
 numba>=0.60.0,<0.61.0
-pedalboard>=0.9.0
+# Pinned to exact tested version 0.9.25 for audio effects DSP stability and GPLv3 source-compliance lock.
+pedalboard==0.9.25
 
 # HTTP client (for CUDA backend download)
 httpx>=0.27.0

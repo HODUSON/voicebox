@@ -14,6 +14,9 @@ datas += copy_metadata('tokenizers')
 datas += copy_metadata('safetensors')
 datas += copy_metadata('tqdm')
 datas += copy_metadata('en_core_web_sm')
+datas += copy_metadata('kokoro-vietnamese')
+datas += copy_metadata('sea-g2p')
+hiddenimports += ['backend.backends.kokoro_vi_backend', 'backend.phonemizers.vietnamese_kokoro']
 hiddenimports += collect_submodules('jaraco')
 hiddenimports += collect_submodules('tada')
 hiddenimports += collect_submodules('mlx')
@@ -48,6 +51,10 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('en_core_web_sm')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('unidic_lite')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+tmp_ret = collect_all('kokoro_vietnamese')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+tmp_ret = collect_all('sea_g2p')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('fastmcp')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
